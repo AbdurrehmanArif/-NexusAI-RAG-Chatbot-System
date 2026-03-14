@@ -6,8 +6,6 @@ from app.embeddings import search_similar_chunks
 genai.configure(api_key=GEMINI_API_KEY)
 model = genai.GenerativeModel("gemini-2.5-flash")
 
-
-# ─── General Chat ─────────────────────────────────────────
 def general_chat(message: str) -> str:
     """Normal LLM conversation."""
     try:
@@ -16,27 +14,22 @@ def general_chat(message: str) -> str:
     except Exception as e:
         return f"Error: {str(e)}"
 
-
-# ─── RAG Pipeline ─────────────────────────────────────────
 def rag_chat(message: str, website_id: str) -> dict:
     """RAG pipeline - website content se jawab do."""
 
-    # Step 1: Relevant chunks retrieve karo
     chunks = search_similar_chunks(website_id, message, top_k=5)
 
-    print(f"🔍 Retrieved {len(chunks)} chunks for query: '{message}'")
+    print(f"Retrieved {len(chunks)} chunks for query: '{message}'")
 
     if not chunks:
-        # Fallback: general answer do
-        print("⚠️  No chunks found - using general LLM")
+        print("No chunks found - using general LLM")
         answer = general_chat(message)
         return {
             "response": answer,
             "sources": [],
             "mode": "general_fallback"
         }
-
-    # Step 2: Context banao
+        
     context_parts = []
     sources = []
     for i, chunk in enumerate(chunks, 1):
@@ -46,7 +39,6 @@ def rag_chat(message: str, website_id: str) -> dict:
 
     context = "\n\n".join(context_parts)
 
-    # Step 3: RAG Prompt
     prompt = f"""You are a helpful AI assistant for a business website. 
 A user is asking a question about the website content.
 
@@ -67,11 +59,10 @@ Instructions:
 
 Answer:"""
 
-    # Step 4: Gemini se answer lo
     try:
         response = model.generate_content(prompt)
         answer = response.text
-        print(f"✅ Answer generated ({len(answer)} chars)")
+        print(f"Answer generated ({len(answer)} chars)")
     except Exception as e:
         answer = f"Error generating response: {str(e)}"
 
