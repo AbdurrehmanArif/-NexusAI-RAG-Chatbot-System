@@ -13,7 +13,6 @@ HEADERS = {
     )
 }
 
-# Tags to completely remove before text extraction
 REMOVE_TAGS = [
     "script", "style", "noscript", "nav", "header", "footer",
     "aside", "form", "button", "input", "iframe", "svg",
@@ -46,7 +45,7 @@ def scrape_page(url: str) -> str | None:
         soup = BeautifulSoup(resp.text, "lxml")
         return _clean_soup(soup)
     except Exception as e:
-        print(f"❌ Failed to scrape {url}: {e}")
+        print(f" Failed to scrape {url}: {e}")
         return None
 
 
@@ -75,7 +74,7 @@ def get_internal_links(base_url: str, max_links: int = 10) -> List[str]:
 
         return list(links)
     except Exception as e:
-        print(f"❌ Could not collect links from {base_url}: {e}")
+        print(f"Could not collect links from {base_url}: {e}")
         return [base_url]
 
 
@@ -88,7 +87,7 @@ def scrape_website(url: str, max_pages: int = 10) -> List[dict]:
     links = get_internal_links(url, max_links=max_pages)
 
     for link in links:
-        print(f"🔍 Scraping: {link}")
+        print(f"Scraping: {link}")
         content = scrape_page(link)
         if content and len(content) > 100:  # skip near-empty pages
             pages.append({"url": link, "content": content})
