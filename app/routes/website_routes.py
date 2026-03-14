@@ -22,9 +22,9 @@ async def add_website(body: AddWebsiteRequest):
     website_id = str(result.inserted_id)
 
     try:
-        print(f"🌐 Starting scrape: {body.url}")
+        print(f" Starting scrape: {body.url}")
         pages = scrape_website(body.url, max_pages=10)
-        print(f"✅ Scraped {len(pages)} pages")
+        print(f" Scraped {len(pages)} pages")
 
         if not pages:
             await db.websites.update_one(
@@ -33,9 +33,9 @@ async def add_website(body: AddWebsiteRequest):
             )
             raise HTTPException(status_code=422, detail="Could not scrape any content from the URL.")
 
-        print(f"🧠 Generating embeddings...")
+        print(f" Generating embeddings...")
         chunks_stored = store_chunks(website_id, pages)
-        print(f"✅ Stored {chunks_stored} chunks")
+        print(f" Stored {chunks_stored} chunks")
 
         await db.websites.update_one(
             {"_id": ObjectId(website_id)},
