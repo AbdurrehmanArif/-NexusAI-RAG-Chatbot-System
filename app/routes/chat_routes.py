@@ -27,7 +27,7 @@ async def chat(body: ChatRequest):
 
     try:
         if body.website_id:
-            # ── Website RAG Mode ──
+            
             oid = safe_object_id(body.website_id)
             if oid is None:
                 raise HTTPException(status_code=400, detail="Invalid website_id format")
@@ -47,7 +47,7 @@ async def chat(body: ChatRequest):
             mode = "website"
 
         else:
-            # ── General Mode ──
+            
             response_text = general_chat(body.message)
             mode = "general"
 
@@ -57,10 +57,10 @@ async def chat(body: ChatRequest):
         traceback.print_exc()
         raise HTTPException(status_code=500, detail=str(e))
 
-    # ✅ MongoDB mein save karo - try/except alag taake chat fail na ho
+    
     try:
         history_doc = chat_history_model(
-            user_id=str(body.user_id),        # string hi rakho
+            user_id=str(body.user_id),        
             message=body.message,
             response=response_text,
             mode=mode,
@@ -70,7 +70,7 @@ async def chat(body: ChatRequest):
         print(f"✅ Chat saved to MongoDB: {result.inserted_id}")
     except Exception as e:
         # Save fail hone pe bhi response return karo
-        print(f"⚠️  MongoDB save failed: {e}")
+        print(f"  MongoDB save failed: {e}")
         traceback.print_exc()
 
     return ChatResponse(response=response_text, mode=mode, sources=sources)
@@ -89,5 +89,5 @@ async def get_history(user_id: str, limit: int = 50):
         doc["_id"] = str(doc["_id"])
         history.append(doc)
 
-    print(f"📜 Found {len(history)} messages for user: {user_id}")
+    print(f"Found {len(history)} messages for user: {user_id}")
     return {"history": history, "total": len(history)}
