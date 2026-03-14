@@ -9,7 +9,7 @@ async def connect_db():
     global client, db
     client = AsyncIOMotorClient(MONGODB_URL)
     db = client[DATABASE_NAME]
-    print(f"✅ MongoDB Connected: {DATABASE_NAME}")
+    print(f" MongoDB Connected: {DATABASE_NAME}")
 
 
 async def close_db():
