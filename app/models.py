@@ -30,10 +30,10 @@ def chat_history_model(
     website_id: str = None,
 ) -> dict:
     return {
-        "user_id":    str(user_id),       # ✅ hamesha string
-        "message":    message,            # user ne kya poocha
-        "response":   response,           # AI ka jawab
-        "mode":       mode,               # general | website
+        "user_id":    str(user_id),       
+        "message":    message,            
+        "response":   response,           
+        "mode":       mode,               
         "website_id": str(website_id) if website_id else None,
         "timestamp":  datetime.utcnow(),
         "created_at": datetime.utcnow(),
